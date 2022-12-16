@@ -1,6 +1,6 @@
 import { Request, Response, Router } from 'express';
-import Controller from '@interfaces/controller.interface';
-import AuthService from "@services/auth.service";
+import Controller from '../interfaces/controller.interface';
+import AuthService from "../services/auth.service";
 
 class AuthController implements Controller {
     public path = '/auth';

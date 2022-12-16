@@ -12,16 +12,6 @@
       "module": "commonjs",
       "resolveJsonModule":true,
       "baseUrl": "src",
-      "paths": {
-        "@repositories/*": ["repositories/*"],
-        "@services/*": ["services/*"],
-        "@models/*": ["models/*"],
-        "@controllers/*": ["controllers/*"],
-        "@interfaces/*": ["interfaces/*"],
-        "@middlewares/*": ["middlewares/*"],
-        "@DataTransferObjects/*": ["DataTransferObjects/*"],
-        "@utils/*": ["utils/*"],
-      }
     },
     "include": [
       ".env",

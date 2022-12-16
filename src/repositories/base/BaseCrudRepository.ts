@@ -1,5 +1,5 @@
-import DatabaseConnection from "@repositories/database_connection";
-import Repository from "@interfaces/repository.interface";
+import DatabaseConnection from "../../repositories/database_connection";
+import Repository from "../../interfaces/repository.interface";
 
 export default class BaseCrudRepository implements Repository {
     // Create base repository

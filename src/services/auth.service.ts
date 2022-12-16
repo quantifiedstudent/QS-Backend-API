@@ -1,5 +1,5 @@
-import Service from "@interfaces/service.interface";
-import AuthRepository from "@repositories/auth.repository";
+import Service from "../interfaces/service.interface";
+import AuthRepository from "../repositories/auth.repository";
 
 export default class AuthService implements Service {
     private authRepository = new AuthRepository();

@@ -2,13 +2,13 @@
   "name": "qs-api",
   "version": "1.0.0",
   "description": "The Quantified Student REST API",
-  "main": "server.js",
+  "main": "server.ts",
   "scripts": {
     "build": "tsc -p .",
     "lint": "npx eslint ./src/",
     "lint-fix": "npx eslint ./src/ --fix",
     "server": "node ./build/server.js",
-    "dev": "nodemon"
+    "dev": "npx nodemon"
   },
   "repository": {
     "type": "git",
@@ -40,6 +40,7 @@
     "eslint-config-airbnb-typescript": "^17.0.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
+    "node-dev": "^7.4.3",
     "nodemon": "^2.0.20",
     "prettier": "^2.8.1",
     "ts-node": "^10.9.1",

@@ -1,5 +1,5 @@
-import BaseCrudRepository from "@repositories/base/BaseCrudRepository";
-import {UserDto} from "@DataTransferObjects/user.dto";
+import BaseCrudRepository from "../repositories/base/BaseCrudRepository";
+import {UserDto} from "DataTransferObjects/user.dto";
 
 export default class AuthRepository extends BaseCrudRepository {
     constructor() {
@@ -11,7 +11,7 @@ export default class AuthRepository extends BaseCrudRepository {
         return new Promise((resolve, reject) => {
             this.db.getConnection().query(
             `SELECT * FROM ${this.tableName} WHERE user_id = $1`, [userId],
-            (err, res) => {
+            (err: any, res: { rows: (UserDto | PromiseLike<UserDto>)[]; }) => {
                 if (err) reject(err)
                 else resolve(res.rows[0]);
             });
@@ -26,7 +26,7 @@ export default class AuthRepository extends BaseCrudRepository {
                         INTO ${this.tableName}  
                         (canvasId, canvasToken, AcceptedTerms)
                         VALUES ($1, $2, $3)`, [canvasId, canvasToken, AcceptedTerms],
-                (err, res) => {
+                (err: any, res: any) => {
                             if (err) reject(err)
                             else {
                                 console.log(res);
@@ -43,7 +43,7 @@ export default class AuthRepository extends BaseCrudRepository {
         return new Promise((resolve, reject) => {
             this.db.getConnection().query(
                 `SELECT * FROM ${this.tableName}`,
-                (err, res) => {
+                (err: any, res: { rows: UserDto[] | PromiseLike<UserDto[]>; }) => {
                     if (err) reject(err)
                     else resolve(res.rows);
                 });
