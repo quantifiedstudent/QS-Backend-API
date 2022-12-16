@@ -16,7 +16,7 @@ class App {
     constructor(controllers: Controller[]) {
         this.app = express();
         try {
-            this.db.getConnection();
+            this.db.getPool();
         } catch (e) {
             console.error("Can't connect to db: ", e)
         }
