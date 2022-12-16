@@ -9,12 +9,14 @@ export default class UserRepository extends BaseCrudRepository {
     // Get user by id
     async getById(userId: string) : Promise<UserDto> | undefined {
         return new Promise((resolve, reject) => {
-            this.db.getPool().query(
-            `SELECT * FROM ${this.tableName} WHERE PK_CanvasId = ?`, [userId],
-            (err: any, res: any) => {
-                if (err) reject(err)
-                else resolve(res[0]);
-            });
+            this.db.getPool().getConnection((err, connection) => {
+                connection.query(
+                    `SELECT * FROM ${this.tableName} WHERE PK_CanvasId = ?`, [userId],
+                    (err: any, res: any) => {
+                        if (err) reject(err)
+                        else resolve(res[0]);
+                    });
+            })
         });
     }
 
