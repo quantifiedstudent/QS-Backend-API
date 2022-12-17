@@ -7,7 +7,7 @@
     "build": "tsc -p .",
     "lint": "npx eslint ./src/",
     "lint-fix": "npx eslint ./src/ --fix",
-    "server": "node ./build/server.js",
+    "start": "node ./build/server.js",
     "dev": "npx nodemon"
   },
   "repository": {

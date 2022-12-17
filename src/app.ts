@@ -17,6 +17,7 @@ class App {
         this.app = express();
         try {
             this.db.getPool();
+            console.log("info", "Database Connected")
         } catch (e) {
             console.error("Can't connect to db: ", e)
         }
