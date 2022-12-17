@@ -2,6 +2,7 @@ import helmet from "helmet";
 import Controller from './interfaces/controller.interface';
 import errorMiddleware from './middlewares/error.middleware';
 import DatabaseConnection from "./repositories/database_connection";
+import authMiddleware from './middlewares/auth.middleware';
 
 require('dotenv').config();
 const cors = require('cors');
@@ -45,6 +46,7 @@ class App {
                 origin: allowedOrigins,
             }),
         );
+        this.app.use(authMiddleware);
     }
 
     private initializeControllers(controllers: Controller[]) {
