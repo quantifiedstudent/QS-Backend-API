@@ -37,7 +37,7 @@ class AttendanceController implements Controller {
     private addAttendance = async (request: Request, response: Response) => {
         try {
             if (response.locals.userInfo) {
-                return await this.attendanceService.addAttendance(response.locals.userInfo.id).then(() => response.status(200).json({"success":"true"}))
+                return await this.attendanceService.addAttendance(response.locals.userInfo.id).then(() => response.status(201).json({"success":"true"}))
             }
             return response.status(401)
                 .json({"error": "unauthenticated"})
