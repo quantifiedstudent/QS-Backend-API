@@ -29,7 +29,7 @@ class DataSourceController implements Controller {
     private getAllDataSources = async (request: Request, response: Response) => {
         try {
             return this.dataSourceService.getAllDataSources().then((result) => {
-                if(response) {
+                if(result) {
                     return response.status(200)
                         .json(result);
                 } else {
@@ -53,7 +53,7 @@ class DataSourceController implements Controller {
         try {
             if(userId) {
                 return this.userDatasourceService.getAllUserDataSources(userId).then((result) => {
-                    if(response) {
+                    if(result) {
                         return response.status(200)
                             .json(result);
                     } else {
@@ -80,7 +80,7 @@ class DataSourceController implements Controller {
         try {
             if(canvasUserId && dataSourceId && token) {
                 return this.userDatasourceService.create(canvasUserId, dataSourceId, token).then((result) => {
-                    if(response) {
+                    if(result) {
                         return response.status(200).send("Data source created");
                     } else {
                         return response.status(500).send("No data sources found");
@@ -107,7 +107,7 @@ class DataSourceController implements Controller {
         try {
             if(canvasUserId) {
                 return this.sharedDataSourceService.getSharedDataSource(+userId, +canvasUserId, +dataSourceId).then((result) => {
-                    if(response) {
+                    if(result) {
                         return response.status(200)
                             .json(result);
                     } else {
