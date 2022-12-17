@@ -7,6 +7,8 @@ import authMiddleware from './middlewares/auth.middleware';
 require('dotenv').config();
 const cors = require('cors');
 const express = require('express');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
 
 const allowedOrigins = ['https://qsfront.testenvi.nl'];
 
@@ -48,6 +50,7 @@ class App {
             }),
         );
         this.app.use(authMiddleware);
+        this.app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
     }
 
     private initializeControllers(controllers: Controller[]) {
