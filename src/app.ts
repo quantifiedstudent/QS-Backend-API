@@ -12,6 +12,7 @@ const allowedOrigins = ['https://qsfront.testenvi.nl'];
 
 class App {
     public app;
+
     public db = new DatabaseConnection();
 
     constructor(controllers: Controller[]) {
@@ -28,7 +29,7 @@ class App {
     }
 
     public listen() {
-        let port = process.env.PORT || 8000;
+        const port = process.env.PORT || 8000;
         this.app.listen(port, () => {
             console.log('info', `Server listening on port ${port}`)
         });

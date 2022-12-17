@@ -21,7 +21,7 @@ class AttendanceController implements Controller {
     private getAttendance = async (request: Request, response: Response) => {
         try {
             if(response.locals.userInfo) {
-                return this.attendanceService.getAttendanceForUser(response.locals.userInfo.id).then((result) => {
+                return await this.attendanceService.getAttendanceForUser(response.locals.userInfo.id).then((result) => {
                     if (result) return response.status(200).json(result);
                     return response.status(404).send("No records found")
                 })
@@ -37,9 +37,7 @@ class AttendanceController implements Controller {
     private addAttendance = async (request: Request, response: Response) => {
         try {
             if (response.locals.userInfo) {
-                return this.attendanceService.addAttendance(response.locals.userInfo.id).then((result) => {
-                    return response.status(200).json({"success":"true"})
-                })
+                return await this.attendanceService.addAttendance(response.locals.userInfo.id).then(() => response.status(200).json({"success":"true"}))
             }
             return response.status(401)
                 .json({"error": "unauthenticated"})
