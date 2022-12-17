@@ -2,7 +2,7 @@
   "name": "qs-api",
   "version": "1.0.0",
   "description": "The Quantified Student REST API",
-  "main": "server.js",
+  "main": "server.ts",
   "scripts": {
     "build": "tsc -p .",
     "lint": "npx eslint ./src/",
@@ -27,11 +27,14 @@
     "express": "^4.18.2",
     "express-validator": "^6.14.2",
     "helmet": "^6.0.1",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "node-fetch": "^2.6.7"
   },
   "devDependencies": {
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.14",
+    "@types/mysql": "^2.15.21",
+    "@types/node-fetch": "^2.6.2",
     "@typescript-eslint/eslint-plugin": "^5.46.1",
     "@typescript-eslint/parser": "^5.46.1",
     "eslint": "^8.29.0",
@@ -39,6 +42,7 @@
     "eslint-config-airbnb-typescript": "^17.0.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
+    "node-dev": "^7.4.3",
     "nodemon": "^2.0.20",
     "prettier": "^2.8.1",
     "ts-node": "^10.9.1",
