@@ -32,7 +32,7 @@ export default class UserDataSourceRepository extends BaseCrudRepository {
                     `SELECT * FROM ${this.tableName} WHERE FK_CanvasId = ? AND FK_DsId = ?`, [canvasUserId, datasourceId],
                     (err: any, res: any) => {
                         if (err) reject(err)
-                        else resolve(res);
+                        else resolve(res[0]);
                 });
             })
         });

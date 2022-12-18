@@ -20,10 +20,14 @@ class DataSourceController implements Controller {
 
     private initializeRoutes() {
         this.router.get(`${this.path}/`, this.getAllDataSources);
-        this.router.get(`${this.path}/user/:userId`, this.getAllUserDataSources);
         this.router.post(`${this.path}/`, this.createUserDataSource);
 
-        this.router.get(`${this.path}/shared/:userId/:dataSourceId`, this.getSharedDataSource);
+        this.router.get(`${this.path}/user/:userId`, this.getAllUserDataSources);
+        this.router.get(`${this.path}/user/:userId/:dataSourceId`, this.getUserDataSourceById);
+
+
+        this.router.get(`${this.path}/share/:userId/:dataSourceId`, this.getSharedDataSource);
+        this.router.post(`${this.path}/share/:userId/:dataSourceId`, this.createUserDataSource);
     }
 
     private getAllDataSources = async (request: Request, response: Response) => {
@@ -52,6 +56,30 @@ class DataSourceController implements Controller {
             }
 
             return this.userDatasourceService.getAllByUserId(+userId).then((result) => {
+                if(!result) {
+                    return response.status(404).send("No data sources found");
+                }
+                return response.status(200)
+                    .json(result);
+            })
+        }
+        catch (err) {
+            console.log(err)
+            return response.status(400)
+                .json(err.errors);
+        }
+    }
+
+    private getUserDataSourceById = async (request: Request, response: Response) => {
+        const {userId, dataSourceId} = request.params;
+
+        if(!userId || !dataSourceId) {
+            return response.status(400)
+                .json({"error":`Missing required parameter: ${userId != null ? "" : "userId"}${dataSourceId != null ? "" : "dataSourceId"}`});
+        }
+
+        try {
+            return this.userDatasourceService.getById(+userId, +dataSourceId).then((result) => {
                 if(!result) {
                     return response.status(404).send("No data sources found");
                 }
