@@ -10,7 +10,7 @@ export default class UserDataSourceRepository extends BaseCrudRepository {
     }
 
     // Get all data sources that belong to a user
-    async getAllByUserId(canvasUserId: string) : Promise<UserDataSourceDto> | undefined {
+    async getAllByUserId(canvasUserId: number) : Promise<UserDataSourceDto> | undefined {
         return new Promise((resolve, reject) => {
             this.db.getPool().getConnection((err, connection) => {
                 connection.query(
@@ -25,7 +25,7 @@ export default class UserDataSourceRepository extends BaseCrudRepository {
     }
 
     // Get specific data source that belongs to a user
-    async getById(canvasUserId: string, datasourceId: string) : Promise<UserDataSourceDto> | undefined {
+    async getById(canvasUserId: number, datasourceId: number) : Promise<UserDataSourceDto> | undefined {
         return new Promise((resolve, reject) => {
             this.db.getPool().getConnection((err, connection) => {
                 connection.query(
@@ -38,7 +38,7 @@ export default class UserDataSourceRepository extends BaseCrudRepository {
         });
     }
 
-    async createUsedDataSource(canvasUserId: string, datasourceId: string, token: string) : Promise<UserDataSourceDto> | undefined {
+    async createUsedDataSource(canvasUserId: number, datasourceId: number, token: string) : Promise<UserDataSourceDto> | undefined {
         return new Promise((resolve, reject) => {
             this.db.getPool().getConnection((err, connection) => {
                 if (err) reject(err);

@@ -20,18 +20,17 @@ class UserController implements Controller {
 
     private registerUser = async (request: Request, response: Response) => {
         const {canvasId, canvasAccessToken, acceptedTerms} = request.body;
+
+        if(!canvasId && canvasAccessToken && acceptedTerms) {
+            return response.status(400)
+                .json({"error":`Missing required parameters in body: ${canvasId != null ? "" : "canvasId,"}${canvasAccessToken != null ? "" : "canvasAccessToken,"}${acceptedTerms != null ? "" : "acceptedTerms,"}`});
+        }
+
         try {
-            if(canvasId && canvasAccessToken && acceptedTerms) {
-                return this.userService.registerUser(canvasId, acceptedTerms).then((result) => {
-                    return response.status(200)
-                        .json({"success": result});
-                }).catch((error) => {
-                    return response.status(400)
-                        .json({"error": error});
-                });
-            }
-            return response.status(404)
-            .json({"error":`Missing required parameters in body: ${canvasId != null ? "" : "canvasId,"}${canvasAccessToken != null ? "" : "canvasAccessToken,"}${acceptedTerms != null ? "" : "acceptedTerms,"}`});
+            return this.userService.registerUser(canvasId, acceptedTerms).then((result) => {
+                return response.status(201)
+                    .json(result);
+            })
         }
         catch (err) {
             return response.status(400)
@@ -41,22 +40,21 @@ class UserController implements Controller {
 
     private getUserById = async (request: Request, response: Response) => {
         const {canvasId} = request.params;
-        try {
-            if(canvasId) {
-                return this.userService.getById(canvasId).then((result) => {
-                    if(result) {
-                        return response.status(200)
-                            .json(result);
-                    } else {
-                        return response.status(404).send(`User with ID: "${canvasId}" not found`);
-                    }
-                }).catch((error) => {
-                    return response.status(400)
-                        .json({error});
-                });
-            }
+
+        if(!canvasId) {
             return response.status(404)
-            .json({"error":`Missing required parameter: ${canvasId != null ? "" : "canvasId"}`});
+                .json({"error":`Missing required parameter: ${canvasId != null ? "" : "canvasId"}`});
+        }
+
+        try {
+            return this.userService.getById(canvasId).then((result) => {
+                if(result) {
+                    return response.status(200)
+                        .json(result);
+                } else {
+                    return response.status(404).send(`User with ID: "${canvasId}" not found`);
+                }
+            })
         }
         catch (err) {
             return response.status(400)

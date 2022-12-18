@@ -28,18 +28,13 @@ class DataSourceController implements Controller {
 
     private getAllDataSources = async (request: Request, response: Response) => {
         try {
-            return this.dataSourceService.getAllDataSources().then((result) => {
-                if(result) {
-                    return response.status(200)
-                        .json(result);
-                } else {
+            return this.dataSourceService.getAll().then((result) => {
+                if(!result) {
                     return response.status(404).send("No data sources found");
                 }
-
-            }).catch((error) => {
-                return response.status(400)
-                    .json({"error": error});
-            });
+                return response.status(200)
+                    .json(result);
+            })
         }
         catch (err) {
             console.log(err)
@@ -51,22 +46,18 @@ class DataSourceController implements Controller {
     private getAllUserDataSources = async (request: Request, response: Response) => {
         const {userId} = request.params;
         try {
-            if(userId) {
-                return this.userDatasourceService.getAllUserDataSources(userId).then((result) => {
-                    if(result) {
-                        return response.status(200)
-                            .json(result);
-                    } else {
-                        return response.status(404).send("No data sources found");
-                    }
-    
-                }).catch((error) => {
-                    return response.status(400)
-                        .json({"error": error});
-                });
+            if(!userId) {
+                return response.status(400)
+                    .json({"error":`Missing required parameter: ${userId != null ? "" : "userId"}`});
             }
-            return response.status(404)
-            .json({"error":`Missing required parameter: ${userId != null ? "" : "userId"}`});
+
+            return this.userDatasourceService.getAllByUserId(+userId).then((result) => {
+                if(!result) {
+                    return response.status(404).send("No data sources found");
+                }
+                return response.status(200)
+                    .json(result);
+            })
         }
         catch (err) {
             console.log(err)
@@ -78,21 +69,18 @@ class DataSourceController implements Controller {
     private createUserDataSource = async (request: Request, response: Response) => {
         const {canvasUserId, dataSourceId, token} = request.body;
         try {
-            if(canvasUserId && dataSourceId && token) {
-                return this.userDatasourceService.create(canvasUserId, dataSourceId, token).then((result) => {
-                    if(result) {
-                        return response.status(200).send("Data source created");
-                    } else {
-                        return response.status(500).send("No data sources found");
-                    }
-    
-                }).catch((error) => {
-                    return response.status(400)
-                        .json({"error": error});
-                });
+            if(!(canvasUserId && dataSourceId && token)) {
+                return response.status(400)
+                    .json({"error":`Missing required parameters in body: ${canvasUserId != null ? "" : "canvasId,"}${dataSourceId != null ? "" : "dataSourceId,"}${token != null ? "" : "token,"}`});
             }
-            return response.status(404)
-            .json({"error":`Missing required parameters in body: ${canvasUserId != null ? "" : "canvasId,"}${dataSourceId != null ? "" : "dataSourceId,"}${token != null ? "" : "token,"}`});
+
+            return this.userDatasourceService.create(canvasUserId, dataSourceId, token).then((result) => {
+                if(result) {
+                    return response.status(200).send("Data source created");
+                }
+                return response.status(500).send("No data sources found");
+            })
+
         } catch (err) {
             console.log(err)
             return response.status(400)
@@ -102,25 +90,27 @@ class DataSourceController implements Controller {
     }
 
     private getSharedDataSource = async (request: Request, response: Response) => {
-        const {userId, dataSourceId} = request.params;
-        const {canvasUserId} = request.body;
+        const {userId, dataSourceId} = request.params; // user and Data source that is requested, so the opposite side
+        const {canvasUserId} = request.body; // User that is requesting the data source
         try {
-            if(canvasUserId) {
-                return this.sharedDataSourceService.getSharedDataSource(+userId, +canvasUserId, +dataSourceId).then((result) => {
-                    if(result) {
-                        return response.status(200)
-                            .json(result);
-                    } else {
+            if(!canvasUserId) {
+                return response.status(404)
+                    .json({"error":`Missing parameters in body: ${canvasUserId != null ? "" : "canvasUserId"}`});
+            }
+            return this.sharedDataSourceService.getSharedDataSource(+userId, +canvasUserId, +dataSourceId).then((result) => {
+                if(!result) {
+                    return response.status(404).send("No data sources found, or not shared");
+                }
+
+                // We know the datasource is shared now.
+                this.userDatasourceService.getById(+userId, +dataSourceId).then((result) => {
+                    if (!result) {
                         return response.status(404).send("No data sources found");
                     }
-    
-                }).catch((error) => {
-                    return response.status(400)
-                        .json({"error": error});
-                });
-            }
-            return response.status(404)
-            .json({"error":`Missing parameters in body: ${canvasUserId != null ? "" : "canvasUserId"}`});
+                    return response.status(200)
+                        .json(result);
+                })
+            })
         }
         catch (err) {
             console.log(err)
@@ -130,7 +120,34 @@ class DataSourceController implements Controller {
     }
 
     private createSharedDataSource = async (request: Request, response: Response) => {
+        const {userId, dataSourceId} = request.params; // user and Data source that is requested, so the opposite side
+        const {canvasUserId} = request.body; // User that is requesting to share the data source
 
+        if(!userId || !dataSourceId) {
+            return response.status(400)
+                .json({"error":`Missing parameters in params: ${userId != null ? "" : "userId,"}${dataSourceId != null ? "" : "dataSourceId,"}${canvasUserId != null ? "" : "canvasUserId,"}`});
+        }
+
+        if(!canvasUserId) {
+            return response.status(400)
+                .json({"error":`Missing parameters in body: ${canvasUserId != null ? "" : "canvasUserId"}`});
+        }
+
+        try {
+            return this.sharedDataSourceService.createSharedDataSource(+userId, +canvasUserId, +dataSourceId).then((result) => {
+                if(!result) {
+                    return response.status(404).send("User or data source not found");
+                }
+
+                return response.status(201)
+                    .send("Data source was shared");
+            })
+        }
+        catch (err) {
+            console.log(err)
+            return response.status(400)
+                .json(err.errors);
+        }
     }
 }
 

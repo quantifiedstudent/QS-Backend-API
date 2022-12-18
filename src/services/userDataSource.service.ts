@@ -6,15 +6,15 @@ import UserDataSourceRepository from "../repositories/userDataSource.repository"
 export default class UserDataSourceService implements Service {
     private userDataSourceRepository = new UserDataSourceRepository();
 
-    public async getAllUserDataSources(canvasUserId: string) {
+    public async getAllByUserId(canvasUserId: number) {
         return this.userDataSourceRepository.getAllByUserId(canvasUserId);
     }
 
-    public async getByDataSourceId(canvasUserId: string, datasourceId: string) {
+    public async getById(canvasUserId: number, datasourceId: number) {
         return this.userDataSourceRepository.getById(canvasUserId, datasourceId);
     }
 
-    public async create(canvasUserId: string, datasourceId: string, token: string) {
+    public async create(canvasUserId: number, datasourceId: number, token: string) {
         return this.userDataSourceRepository.createUsedDataSource(canvasUserId, datasourceId, token);
     }
 }
