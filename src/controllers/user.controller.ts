@@ -19,15 +19,15 @@ class UserController implements Controller {
     }
 
     private registerUser = async (request: Request, response: Response) => {
-        const {canvasId, canvasAccessToken, acceptedTerms} = request.body;
+        const {canvasId, canvasAccessToken, userName, acceptedTerms} = request.body;
 
-        if(!canvasId && canvasAccessToken && acceptedTerms) {
+        if(!(canvasId && canvasAccessToken && acceptedTerms && userName)) {
             return response.status(400)
-                .json({"error":`Missing required parameters in body: ${canvasId != null ? "" : "canvasId,"}${canvasAccessToken != null ? "" : "canvasAccessToken,"}${acceptedTerms != null ? "" : "acceptedTerms,"}`});
+                .json({"error":`Missing required parameter: ${canvasId != null ? "" : "canvasId"}, ${canvasAccessToken != null ? "" : "canvasAccessToken"}, ${acceptedTerms != null ? "" : "acceptedTerms"}, ${userName != null ? "" : "userName"}`});
         }
 
         try {
-            return this.userService.registerUser(canvasId, acceptedTerms).then((result) => {
+            return this.userService.registerUser(canvasId, userName, acceptedTerms).then((result) => {
                 return response.status(201)
                     .json(result);
             })

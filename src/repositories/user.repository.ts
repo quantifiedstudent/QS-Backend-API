@@ -21,13 +21,13 @@ export default class UserRepository extends BaseCrudRepository {
     }
 
     // Create new user
-    async registerUser(canvasId: string, AcceptedTerms: boolean) : Promise<UserDto> | undefined {
+    async registerUser(canvasId: string, userName: string, AcceptedTerms: boolean) : Promise<UserDto> | undefined {
         return new Promise((resolve, reject) => {
             this.db.getPool().getConnection((err, connection) => {
                 if (err) reject(err);
                 connection.query(
-                    `INSERT INTO ${this.tableName} (PK_CanvasId, AcceptedTerms) VALUES (?, ?)`,
-                    [canvasId, AcceptedTerms],
+                    `INSERT INTO ${this.tableName} (PK_CanvasId, UserName, AcceptedTerms) VALUES (?, ?, ?)`,
+                    [canvasId, userName, AcceptedTerms],
                     (err: any, res: any) => {
                         if (err) reject(err)
                         else {

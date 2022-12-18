@@ -3,4 +3,5 @@ export class UserDto {
     canvasToken: string;
     createdAt: Date;
     AcceptedTerms: boolean;
+    UserName: string
 }
