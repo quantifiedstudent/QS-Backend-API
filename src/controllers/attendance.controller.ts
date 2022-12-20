@@ -35,9 +35,12 @@ class AttendanceController implements Controller {
     }
 
     private addAttendance = async (request: Request, response: Response) => {
+        const { atLocation } = request.body;
         try {
-            if (response.locals.userInfo) {
-                return await this.attendanceService.addAttendance(response.locals.userInfo.id).then(() => response.status(201).json({"success":"true"}))
+            if (response.locals.userInfo && atLocation != null) {
+                return await this.attendanceService.addAttendance(response.locals.userInfo.id, atLocation).then(() => response.status(201).json({"success":"true"}))
+            } else if (atLocation == null) {
+                return response.status(400).json({"error":`Missing required parameter in body: ${atLocation != null ? "" : "atLocation"}`})
             }
             return response.status(401)
                 .json({"error": "unauthenticated"})

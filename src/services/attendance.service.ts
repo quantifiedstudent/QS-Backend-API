@@ -8,7 +8,7 @@ export default class AttendanceService implements Service {
         return this.attendanceRepository.getAllForUser(userId)
     }
 
-    public async addAttendance(userId: number) {
-        return this.attendanceRepository.addAttendance(userId);
+    public async addAttendance(userId: number, atLocation: boolean) {
+        return this.attendanceRepository.addAttendance(userId, atLocation);
     }
 }

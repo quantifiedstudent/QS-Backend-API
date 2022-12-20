@@ -19,11 +19,11 @@ export default class AttendanceRepository extends BaseCrudRepository {
         })
     }
 
-    async addAttendance(userId: number): Promise<AttendanceDto>|undefined {
+    async addAttendance(userId: number, atLocation: boolean): Promise<AttendanceDto>|undefined {
         return new Promise((resolve, reject) => {
             this.db.getPool().getConnection((_, connection) => {
                 connection.query(
-                    `INSERT INTO ${this.tableName} (FK_CanvasId) VALUES(?)`, [userId],
+                    `INSERT INTO ${this.tableName} (FK_CanvasId, AtLocation) VALUES(?, ?)`, [userId, atLocation],
                     (err: any, res: any) => {
                         if (err) reject(err)
                         else resolve(res[0]);
