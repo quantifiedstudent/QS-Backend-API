@@ -29,8 +29,9 @@ class AttendanceController implements Controller {
             return response.status(401)
                 .json({"error": "unauthenticated"})
         } catch (err) {
+            console.log("error", err)
             return response.status(404)
-                .json(err.errors);
+                .json({"error": "Could not retrieve attendance"});
         }
     }
 
@@ -45,8 +46,9 @@ class AttendanceController implements Controller {
             return response.status(401)
                 .json({"error": "unauthenticated"})
         } catch (err) {
+            console.log('error', err)
             return response.status(404)
-                .json(err.errors);
+                .json({"success": "false"});
         }
     }
 }
