@@ -3,7 +3,7 @@ import Controller from '../interfaces/controller.interface';
 import UserService from "../services/user.service";
 
 class UserController implements Controller {
-    public path = '/user';
+    public path = '/users';
 
     public router = Router();
 

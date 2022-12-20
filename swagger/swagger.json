@@ -1,0 +1,72 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "title": "Quantified Student API Swagger",
+      "version": "0.1.0",
+      "description": "The Quantified Student API written in Express, Typescript and documented using Swagger UI",
+      "license": {
+        "name": "MIT",
+        "url": "https://spdx.org/licenses/MIT.html"
+      },
+      "contact": {
+        "name": "Quantified Student",
+        "url": "https://quantifiedstudent.com",
+        "email": "beheerfhict@fhict.nl"
+      }
+  },
+  "host": "qsapi.azurewebsites.net",
+  "basePath": "",
+  "tags": [
+    {
+        "name": "Attendance",
+        "description": "Endpoint for Attendance"
+    }
+  ],
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/attendance": {
+        "get": {
+            "tags": [
+                "Attendance"
+            ],
+            "summary": "Retrieves all attendance data for user",
+            "responses": {
+                "200": {
+                    "description": "OK"
+                },
+                "404": {
+                    "description": "No data found"
+                },
+                "401": {
+                    "description": "Unauthenticated request"
+                }
+            }
+        },
+        "post": {
+            "tags": [
+                "Attendance"
+            ],
+            "summary": "Creates a new attendance entry for user",
+            "responses": {
+                "201": {
+                    "description": "Created"
+                },
+                "401": {
+                    "description": "Unauthenticated request"
+                },
+                "404": {
+                    "description": "Server Side Error"
+                }
+            }
+        }
+    }
+  }
+}

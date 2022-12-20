@@ -2,15 +2,19 @@ import helmet from "helmet";
 import Controller from './interfaces/controller.interface';
 import errorMiddleware from './middlewares/error.middleware';
 import DatabaseConnection from "./repositories/database_connection";
+import authMiddleware from './middlewares/auth.middleware';
 
 require('dotenv').config();
 const cors = require('cors');
 const express = require('express');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('../swagger/swagger.json');
 
 const allowedOrigins = ['https://qsfront.testenvi.nl'];
 
 class App {
     public app;
+
     public db = new DatabaseConnection();
 
     constructor(controllers: Controller[]) {
@@ -27,7 +31,7 @@ class App {
     }
 
     public listen() {
-        let port = process.env.PORT || 8000;
+        const port = process.env.PORT || 8000;
         this.app.listen(port, () => {
             console.log('info', `Server listening on port ${port}`)
         });
@@ -45,6 +49,8 @@ class App {
                 origin: allowedOrigins,
             }),
         );
+        this.app.use(authMiddleware);
+        this.app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
     }
 
     private initializeControllers(controllers: Controller[]) {

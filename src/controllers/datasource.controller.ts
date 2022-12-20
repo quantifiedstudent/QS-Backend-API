@@ -6,7 +6,7 @@ import SharedDataSourceRepository from "../repositories/sharedDataSource.reposit
 import SharedDataSourceService from "../services/sharedDataSource.service";
 
 class DataSourceController implements Controller {
-    public path = '/datasource';
+    public path = '/datasources';
 
     public router = Router();
 
