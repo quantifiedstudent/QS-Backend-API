@@ -9,11 +9,10 @@ function errorMiddleware(
 ) {
   const status = error.status || 500;
   const message = error.message || 'Oops! Something went wrong.';
-  response.status(status)
-    .send({
-      message,
-      status,
-    });
+  response.status(status).send({
+    message,
+    status,
+  });
   if (!error) next();
 }
 

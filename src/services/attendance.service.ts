@@ -1,14 +1,14 @@
-import Service from "../interfaces/service.interface";
-import AttendanceRepository from "../repositories/attendance.repository";
+import Service from '../interfaces/service.interface';
+import AttendanceRepository from '../repositories/attendance.repository';
 
 export default class AttendanceService implements Service {
-    private attendanceRepository = new AttendanceRepository();
+  private attendanceRepository = new AttendanceRepository();
 
-    public async getAttendanceForUser(userId: number) {
-        return this.attendanceRepository.getAllForUser(userId)
-    }
+  public async getAttendanceForUser(userId: number) {
+    return this.attendanceRepository.getAllForUser(userId);
+  }
 
-    public async addAttendance(userId: number, atLocation: boolean) {
-        return this.attendanceRepository.addAttendance(userId, atLocation);
-    }
+  public async addAttendance(userId: number, atLocation: boolean) {
+    return this.attendanceRepository.addAttendance(userId, atLocation);
+  }
 }
