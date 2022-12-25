@@ -1,6 +1,8 @@
-export class DatasourceDto {
-    DsId: number;
-    InDatabase: boolean;
-    Location: string;
-    DsName: string;
+class DatasourceDto {
+  DsId: number;
+  InDatabase: boolean;
+  Location: string;
+  DsName: string;
 }
+
+export default DatasourceDto;
