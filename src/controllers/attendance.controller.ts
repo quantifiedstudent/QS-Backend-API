@@ -1,4 +1,5 @@
 import { Request, Response, Router } from 'express';
+import QuantifiedStudentException from 'helpers/exceptions/quantifiedStudentExceptions';
 
 import Controller from '../interfaces/controller.interface';
 import AttendanceService from '../services/attendance.service';
@@ -26,15 +27,13 @@ class AttendanceController implements Controller {
           response.locals.userInfo.id,
         );
 
-        if (!attendance) return response.status(404).send('No records found');
+        if (!attendance) return QuantifiedStudentException.NotFound(response);
 
         return response.status(200).json(attendance);
       }
-      return response.status(401).json({ error: 'unauthenticated' });
+      return QuantifiedStudentException.Unauthenticated(response);
     } catch (err) {
-      return response
-        .status(404)
-        .json({ error: 'Could not retrieve attendance' });
+      return QuantifiedStudentException.ServerError(response);
     }
   };
 
@@ -42,11 +41,9 @@ class AttendanceController implements Controller {
     const { atLocation } = request.body;
 
     if (!atLocation)
-      return response.status(400).json({
-        error: `Missing required parameter in body: ${
-          atLocation != null ? '' : 'atLocation'
-        }`,
-      });
+      return QuantifiedStudentException.MissingParameters(response, [
+        'atLocation',
+      ]);
 
     try {
       if (response.locals.userInfo) {
@@ -56,15 +53,17 @@ class AttendanceController implements Controller {
         );
 
         if (!addedAttendance)
-          return response.status(500).send('Could not add attendance');
+          return QuantifiedStudentException.ServerError(response);
 
         return response.status(201).json({ success: 'true' });
       }
 
-      return response.status(401).json({ error: 'unauthenticated' });
+      return QuantifiedStudentException.Unauthenticated(response);
     } catch (err) {
-      console.log('error', err);
-      return response.status(404).json({ success: 'false' });
+      return QuantifiedStudentException.ServerError(
+        response,
+        'Could not add attendance',
+      );
     }
   };
 }

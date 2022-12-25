@@ -1,4 +1,7 @@
 import { Request, Response, Router } from 'express';
+
+import QuantifiedStudentException from 'helpers/exceptions/quantifiedStudentExceptions';
+
 import Controller from '../interfaces/controller.interface';
 import DatasourceService from '../services/datasource.service';
 import UserDataSourceService from '../services/userDataSource.service';
@@ -44,8 +47,7 @@ class DataSourceController implements Controller {
     try {
       const dataSources = await this.dataSourceService.getAll();
 
-      if (!dataSources)
-        return response.status(404).send('No data sources found');
+      if (!dataSources) return QuantifiedStudentException.NotFound(response);
 
       return response.status(200).json(dataSources);
     } catch (err) {
@@ -60,21 +62,18 @@ class DataSourceController implements Controller {
     const { userId } = request.params;
 
     if (!userId)
-      return response.status(400).json({
-        error: `Missing required parameter: ${userId != null ? '' : 'userId'}`,
-      });
+      return QuantifiedStudentException.MissingParameters(response, ['userId']);
 
     try {
       const dataSources = await this.userDatasourceService.getAllByUserId(
         Number(userId),
       );
 
-      if (!dataSources)
-        return response.status(404).send('No data sources found');
+      if (!dataSources) return QuantifiedStudentException.NotFound(response);
 
       return response.status(200).json(dataSources);
     } catch (err) {
-      return response.status(400).json(err.errors);
+      return QuantifiedStudentException.ServerError(response);
     }
   };
 
@@ -85,11 +84,10 @@ class DataSourceController implements Controller {
     const { userId, dataSourceId } = request.params;
 
     if (!userId || !dataSourceId)
-      return response.status(400).json({
-        error: `Missing required parameter: ${userId != null ? '' : 'userId'}${
-          dataSourceId != null ? '' : 'dataSourceId'
-        }`,
-      });
+      return QuantifiedStudentException.MissingParameters(response, [
+        !userId && 'userId',
+        !dataSourceId && 'dataSourceId',
+      ]);
 
     try {
       const dataSource = await this.userDatasourceService.getById(
@@ -97,12 +95,11 @@ class DataSourceController implements Controller {
         Number(dataSourceId),
       );
 
-      if (!dataSource)
-        return response.status(404).send('No data sources found');
+      if (!dataSource) return QuantifiedStudentException.NotFound(response);
 
       return response.status(200).json(dataSource);
     } catch (err) {
-      return response.status(400).json(err.errors);
+      return QuantifiedStudentException.ServerError(response);
     }
   };
 
@@ -114,13 +111,11 @@ class DataSourceController implements Controller {
     const { token } = request.body;
 
     if (!(userId && dataSourceId && token))
-      return response.status(400).json({
-        error: `Missing required parameters in body: ${
-          userId != null ? '' : 'canvasId,'
-        }${dataSourceId != null ? '' : 'dataSourceId,'}${
-          token != null ? '' : 'token,'
-        }`,
-      });
+      return QuantifiedStudentException.MissingParameters(response, [
+        !userId && 'canvasId',
+        !dataSourceId && 'dataSourceId',
+        !token && 'token',
+      ]);
 
     try {
       const dataSourceCreated = await this.userDatasourceService.create(
@@ -130,11 +125,11 @@ class DataSourceController implements Controller {
       );
 
       if (!dataSourceCreated)
-        return response.status(500).send('Data source could not be created');
+        return QuantifiedStudentException.ServerError(response);
 
       return response.status(200).send('Data source created');
     } catch (err) {
-      return response.status(400).json(err.errors);
+      return QuantifiedStudentException.ServerError(response);
     }
   };
 
@@ -146,11 +141,7 @@ class DataSourceController implements Controller {
     const { canvasUserId } = request.body; // User that is requesting the data source
 
     if (!canvasUserId)
-      return response.status(404).json({
-        error: `Missing parameters in body: ${
-          canvasUserId != null ? '' : 'canvasUserId'
-        }`,
-      });
+      QuantifiedStudentException.MissingParameters(response, ['canvasUserId']);
 
     try {
       const datasource = await this.sharedDataSourceService.getSharedDataSource(
@@ -160,9 +151,10 @@ class DataSourceController implements Controller {
       );
 
       if (!datasource)
-        return response
-          .status(404)
-          .send('No data sources found, or not shared');
+        return QuantifiedStudentException.NotFound(
+          response,
+          'No data sources found, or not shared',
+        );
 
       // We know the datasource is shared now.
       const sharedDatasource = await this.userDatasourceService.getById(
@@ -170,11 +162,11 @@ class DataSourceController implements Controller {
         Number(dataSourceId),
       );
       if (!sharedDatasource)
-        return response.status(404).send('No data sources found');
+        return QuantifiedStudentException.NotFound(response);
 
       return response.status(200).json(sharedDatasource);
     } catch (err) {
-      return response.status(400).json(err.errors);
+      return QuantifiedStudentException.ServerError(response);
     }
   };
 
@@ -185,21 +177,12 @@ class DataSourceController implements Controller {
     const { userId, dataSourceId } = request.params; // user and Data source that is requested, so the opposite side
     const { canvasUserId } = request.body; // User that is requesting to share the data source
 
-    if (!userId || !dataSourceId)
-      return response.status(400).json({
-        error: `Missing parameters in params: ${
-          userId != null ? '' : 'userId,'
-        }${dataSourceId != null ? '' : 'dataSourceId,'}${
-          canvasUserId != null ? '' : 'canvasUserId,'
-        }`,
-      });
-
-    if (!canvasUserId)
-      return response.status(400).json({
-        error: `Missing parameters in body: ${
-          canvasUserId != null ? '' : 'canvasUserId'
-        }`,
-      });
+    if (!userId || !dataSourceId || !canvasUserId)
+      return QuantifiedStudentException.MissingParameters(response, [
+        !userId && 'userId',
+        !dataSourceId && 'dataSourceId',
+        !canvasUserId && 'canvasUserId',
+      ]);
 
     try {
       const shardedDatasourceCreated =
@@ -210,11 +193,14 @@ class DataSourceController implements Controller {
         );
 
       if (!shardedDatasourceCreated)
-        return response.status(404).send('User or data source not found');
+        return QuantifiedStudentException.NotFound(
+          response,
+          'User or data source not found',
+        );
 
       return response.status(201).send('Data source was shared');
     } catch (err) {
-      return response.status(400).json(err.errors);
+      return QuantifiedStudentException.ServerError(response);
     }
   };
 }
