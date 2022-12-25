@@ -1,4 +1,5 @@
 import { Request, Response, Router } from 'express';
+import QuantifiedStudentException from 'helpers/exceptions/quantifiedStudentExceptions';
 import Controller from '../interfaces/controller.interface';
 import UserService from '../services/user.service';
 
@@ -22,20 +23,24 @@ class UserController implements Controller {
     const { canvasId, canvasAccessToken, userName, acceptedTerms } =
       request.body;
 
-    if (!(canvasId && canvasAccessToken && acceptedTerms && userName)) {
-      return response.status(400).json({
-        error: `Missing required parameter: ${
-          canvasId != null ? '' : 'canvasId'
-        }, ${canvasAccessToken != null ? '' : 'canvasAccessToken'}, ${
-          acceptedTerms != null ? '' : 'acceptedTerms'
-        }, ${userName != null ? '' : 'userName'}`,
-      });
-    }
+    if (!(canvasId && canvasAccessToken && acceptedTerms && userName))
+      return QuantifiedStudentException.MissingParameters(response, [
+        !canvasId && 'canvasId',
+        !canvasAccessToken && canvasAccessToken,
+        !acceptedTerms && 'acceptedTerms',
+        !userName && 'userName',
+      ]);
 
     try {
-      return await this.userService
-        .registerUser(canvasId, userName, acceptedTerms)
-        .then((result) => response.status(201).json(result));
+      const userCreated = await this.userService.registerUser(
+        canvasId,
+        userName,
+        acceptedTerms,
+      );
+
+      if (!userCreated) return QuantifiedStudentException.ServerError(response);
+
+      return response.status(201).json(userCreated);
     } catch (err) {
       return response.status(400).json(err.errors);
     }
@@ -44,25 +49,23 @@ class UserController implements Controller {
   private getUserById = async (request: Request, response: Response) => {
     const { canvasId } = request.params;
 
-    if (!canvasId) {
-      return response.status(404).json({
-        error: `Missing required parameter: ${
-          canvasId != null ? '' : 'canvasId'
-        }`,
-      });
-    }
+    if (!canvasId)
+      return QuantifiedStudentException.MissingParameters(response, [
+        'canvasId',
+      ]);
 
     try {
       const user = await this.userService.getById(canvasId);
 
       if (!user)
-        return response
-          .status(404)
-          .send(`User with ID: "${canvasId}" not found`);
+        return QuantifiedStudentException.NotFound(
+          response,
+          `User with ID: "${canvasId}" not found`,
+        );
 
       return response.status(200).json(user);
     } catch (err) {
-      return response.status(400).json(err.errors);
+      return QuantifiedStudentException.ServerError(response);
     }
   };
 }
