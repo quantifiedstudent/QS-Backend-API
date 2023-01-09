@@ -1,5 +1,5 @@
-import UserDto from 'DataTransferObjects/user.dto';
 import { MysqlError } from 'mysql';
+import UserDto from '../DataTransferObjects/user.dto';
 import BaseCrudRepository from './base/BaseCrudRepository';
 
 export default class UserRepository extends BaseCrudRepository {

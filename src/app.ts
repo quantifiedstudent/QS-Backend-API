@@ -1,6 +1,3 @@
-import cors from 'cors';
-import express from 'express';
-import swaggerUi from 'swagger-ui-express';
 import helmet from 'helmet';
 
 import swaggerDocument from '../swagger/swagger.json';
@@ -9,6 +6,10 @@ import Controller from './interfaces/controller.interface';
 import errorMiddleware from './middlewares/error.middleware';
 import DatabaseConnection from './repositories/database_connection';
 import authMiddleware from './middlewares/auth.middleware';
+
+const cors = require('cors')
+const express = require('express')
+const swaggerUi = require('swagger-ui-express')
 
 require('dotenv').config();
 

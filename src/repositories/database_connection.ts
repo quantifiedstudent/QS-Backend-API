@@ -1,4 +1,6 @@
-import mysql, { Pool } from 'mysql';
+import { Pool } from 'mysql';
+
+const mysql = require('mysql')
 
 export default class DatabaseConnection {
   private pool: Pool;

@@ -1,6 +1,6 @@
 import { Request, Response, Router } from 'express';
 
-import QuantifiedStudentException from 'helpers/exceptions/quantifiedStudentExceptions';
+import QuantifiedStudentException from '../helpers/exceptions/quantifiedStudentExceptions';
 
 import Controller from '../interfaces/controller.interface';
 import DatasourceService from '../services/datasource.service';
