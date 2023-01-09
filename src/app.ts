@@ -1,6 +1,6 @@
 import helmet from 'helmet';
 
-import swaggerDocument from '../swagger/swagger.json';
+import swaggerDocument from './swagger/swagger.json';
 
 import Controller from './interfaces/controller.interface';
 import errorMiddleware from './middlewares/error.middleware';
