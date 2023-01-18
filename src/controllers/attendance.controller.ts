@@ -40,7 +40,7 @@ class AttendanceController implements Controller {
   private addAttendance = async (request: Request, response: Response) => {
     const { atLocation } = request.body;
 
-    if (!atLocation)
+    if (atLocation == undefined)
       return QuantifiedStudentException.MissingParameters(response, [
         'atLocation',
       ]);
