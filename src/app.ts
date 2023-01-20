@@ -1,7 +1,5 @@
 import helmet from 'helmet';
 
-import swaggerDocument from './swagger/swagger.json';
-
 import Controller from './interfaces/controller.interface';
 import errorMiddleware from './middlewares/error.middleware';
 import DatabaseConnection from './repositories/database_connection';
@@ -10,10 +8,11 @@ import authMiddleware from './middlewares/auth.middleware';
 const cors = require('cors')
 const express = require('express')
 const swaggerUi = require('swagger-ui-express')
+const swaggerDocument = require('./swagger/swagger.json');
 
 require('dotenv').config();
 
-const allowedOrigins = ['https://qsfront.testenvi.nl'];
+const allowedOrigins = ['https://qsfront.testenvi.nl', 'https://qsapi.azurewebsites.net'];
 
 class App {
   public app;

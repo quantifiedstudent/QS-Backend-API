@@ -40,29 +40,20 @@ class AttendanceController implements Controller {
   private addAttendance = async (request: Request, response: Response) => {
     const { atLocation } = request.body;
 
-    if (atLocation == undefined)
-      return QuantifiedStudentException.MissingParameters(response, [
-        'atLocation',
-      ]);
-
     try {
       if (response.locals.userInfo) {
-        const addedAttendance = await this.attendanceService.addAttendance(
+        await this.attendanceService.addAttendance(
           response.locals.userInfo.id,
           atLocation,
         );
 
-        if (!addedAttendance)
-          return QuantifiedStudentException.ServerError(response);
-
         return response.status(201).json({ success: 'true' });
       }
-
       return QuantifiedStudentException.Unauthenticated(response);
     } catch (err) {
       return QuantifiedStudentException.ServerError(
         response,
-        'Could not add attendance',
+        'Could not add attendance'
       );
     }
   };
