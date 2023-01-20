@@ -8,7 +8,7 @@ import authMiddleware from './middlewares/auth.middleware';
 const cors = require('cors')
 const express = require('express')
 const swaggerUi = require('swagger-ui-express')
-const swaggerDocument = require('./swagger/swagger.json');
+const swaggerDocument = require('../swagger/swagger.json');
 
 require('dotenv').config();
 
